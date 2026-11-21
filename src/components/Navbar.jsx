@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { siteConfig } from '../data/content';
 import { Menu, X, Sparkles, Compass, Feather, Share2, Eye } from 'lucide-react';
 
-export default function Navbar({ activeTheme = 'dark', activeSection = 'home', onNavigate }) {
+export default function Navbar({ visible = false, activeTheme = 'dark', activeSection = 'home', onNavigate }) {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const navRef = useRef(null);
@@ -82,15 +82,26 @@ export default function Navbar({ activeTheme = 'dark', activeSection = 'home', o
   return (
     <header
       ref={navRef}
-      className={`nav-floating-pill animate-navbar-entrance ${
+      className={`nav-floating-pill ${
         isLight ? 'nav-pill-light' : 'nav-pill-dark'
       } ${
         isScrolled
-          ? 'py-1.5 px-3 md:px-4 scale-[0.98]'
+          ? 'py-1.5 px-3 md:px-4'
           : 'py-2 px-3.5 md:px-5'
+      } ${
+        visible
+          ? 'opacity-100 pointer-events-auto'
+          : 'opacity-0 pointer-events-none'
       } w-[calc(100%-28px)] max-w-[420px] md:max-w-none md:w-max flex items-center justify-between md:justify-center gap-3 md:gap-4 lg:gap-6 select-none`}
       style={{
         top: 'max(16px, env(safe-area-inset-top))',
+        transform: visible
+          ? isScrolled
+            ? 'translate(-50%, 0) scale(0.98)'
+            : 'translate(-50%, 0) scale(1)'
+          : 'translate(-50%, -28px)',
+        transition:
+          'opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1), transform 0.8s cubic-bezier(0.22, 1, 0.36, 1), background-color 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease, padding 0.3s ease',
       }}
     >
       {/* 1. Brand Left (Logo + Text) */}

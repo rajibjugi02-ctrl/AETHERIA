@@ -18,12 +18,9 @@ gsap.registerPlugin(ScrollTrigger);
 export default function App() {
   const [activeTheme, setActiveTheme] = useState('dark');
   const [activeSection, setActiveSection] = useState('home');
-  const [showPreloader, setShowPreloader] = useState(() => {
-    if (typeof window !== 'undefined') {
-      return !sessionStorage.getItem('aetheria_intro_shown');
-    }
-    return true;
-  });
+  const [showPreloader, setShowPreloader] = useState(true);
+  const [introComplete, setIntroComplete] = useState(false);
+  const [navbarVisible, setNavbarVisible] = useState(false);
 
   const lenisRef = useRef(null);
 
@@ -39,6 +36,11 @@ export default function App() {
 
   const handlePreloaderComplete = useCallback(() => {
     setShowPreloader(false);
+    setIntroComplete(true);
+    // 0.85s after intro completes: Floating Pill Navbar glides down gently
+    setTimeout(() => {
+      setNavbarVisible(true);
+    }, 850);
   }, []);
 
   useEffect(() => {
@@ -111,6 +113,7 @@ export default function App() {
 
       {/* Luxury Navbar with Direct Lenis Navigation */}
       <Navbar
+        visible={navbarVisible}
         activeTheme={activeTheme}
         activeSection={activeSection}
         onNavigate={handleNavigate}
@@ -118,7 +121,7 @@ export default function App() {
 
       {/* Main Sections */}
       <main className="relative z-20">
-        <HeroSection onNavigate={handleNavigate} />
+        <HeroSection introComplete={introComplete} onNavigate={handleNavigate} />
         <AboutSection />
         <BrandIdentitySection />
         <DirectionSection />
